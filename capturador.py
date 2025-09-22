@@ -1,26 +1,41 @@
 from selenium import webdriver  # pip install selenium
 from selenium.webdriver.chrome.options import Options
-import time
+# import time
+from selenium.webdriver.common.by import By
+from selenium.webdriver.common.keys import Keys
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 
-# Inicializar el driver con opciones específicas
 options = Options()
 #options.add_argument("--headless")  #comentar para mostrar navegador
-# descomentar --headless para abrir el navegador sin mostrar la interfaz gráfica.
 
-driver = webdriver.Chrome(options=options)  # Iniciar el driver de Chrome ***
+driver = webdriver.Chrome(options=options)
 
 try:
-  # Ir al sitio web y capturar la pantalla ***
-    driver.get("https://www.google.com")
+    # driver.get("https://www.google.com")
+    driver.get("https://www.ecosia.org")
 
     # Esperar hasta que la página se cargue completamente ***
-    time.sleep(3)
+    # time.sleep(3)
+    search_box = WebDriverWait(driver, 10).until(
+        EC.presence_of_element_located((By.NAME, "q"))
+    )
+
+    search_box.send_keys("selenium python")
+    search_box.send_keys(Keys.RETURN)
+
+    # Esperar a que aparezcan los resultados
+    WebDriverWait(driver, 10).until(
+        # EC.presence_of_element_located((By.ID, "search"))
+        EC.presence_of_element_located((By.ID, "main"))
+    )
 
     # Captura de pantalla del resultado ***
-    driver.save_screenshot("google2.png")
+    # driver.save_screenshot("google2.png")
+    driver.save_screenshot("ecosia_resultados.png")
 
 except Exception as e:
     print(f"Error: {e}")
 finally:
-    driver.quit()  # Cerrar el driver ***
-  
+    # input("Presiona Enter para cerrar el navegador...")
+    driver.quit()
